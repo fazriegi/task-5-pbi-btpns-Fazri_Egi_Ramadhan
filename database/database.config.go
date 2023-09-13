@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/models"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -43,5 +44,5 @@ func Open() error {
 }
 
 func InitMigrate() {
-	DB.AutoMigrate()
+	DB.AutoMigrate(&models.User{}, &models.Photo{})
 }

@@ -11,6 +11,7 @@ func Start() *gin.Engine {
 
 	userAuthController := controllers.UserAuthController{}
 	r.POST("/users/register", userAuthController.Register)
+	r.POST("/users/login", userAuthController.Login)
 
 	return r
 }

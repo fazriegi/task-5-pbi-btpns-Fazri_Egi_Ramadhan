@@ -6,7 +6,6 @@ import (
 	"os"
 	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/models"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -17,12 +16,6 @@ var (
 )
 
 func Open() error {
-	err := godotenv.Load()
-
-	if err != nil {
-		return fmt.Errorf("Failed to load .env file: %w", err)
-	}
-
 	dbUsername := os.Getenv("DBUSERNAME")
 	dbPassword := os.Getenv("DBPASSWORD")
 	dbHost := os.Getenv("DBHOST")

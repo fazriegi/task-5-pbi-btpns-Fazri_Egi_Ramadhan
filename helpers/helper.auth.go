@@ -1,19 +1,20 @@
 package helpers
 
 import (
-	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/database"
-	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/models"
+	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/controllers/queries"
 
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 func IsRegistered(email string) (bool, error) {
-	var user models.User
-	if err := database.DB.Table("users").Where("email = ?", email).First(&user).Error; err != nil && err == gorm.ErrRecordNotFound {
-		return false, nil
-	} else if err != nil {
+	user, err := queries.GetUser(email)
+
+	if err != nil {
 		return false, err
+	}
+
+	if user.ID == 0 {
+		return false, nil
 	}
 
 	return true, nil

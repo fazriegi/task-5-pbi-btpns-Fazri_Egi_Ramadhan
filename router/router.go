@@ -13,5 +13,10 @@ func Start() *gin.Engine {
 	r.POST("/users/register", userAuthController.Register)
 	r.POST("/users/login", userAuthController.Login)
 
+	userController := controllers.UserController{}
+	r.PUT("/users/:userId", userController.Update)
+	r.DELETE("/users/:userId", userController.Delete)
+
 	return r
 }
+

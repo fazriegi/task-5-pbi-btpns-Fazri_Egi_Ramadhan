@@ -6,18 +6,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func IsRegistered(email string) (bool, error) {
-	user, err := queries.GetUser(email)
+var user queries.UserQuery
+
+func IsRegistered(email string) (bool, uint, error) {
+	user, err := user.Get(email)
 
 	if err != nil {
-		return false, err
+		return false, 0, err
 	}
 
 	if user.ID == 0 {
-		return false, nil
+		return false, 0, nil
 	}
 
-	return true, nil
+	return true, user.ID, nil
 }
 
 func HashPassword(password string) (string, error) {

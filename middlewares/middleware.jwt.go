@@ -31,7 +31,7 @@ func CreateJWTToken(id uint) (string, error) {
 	return tokenString, nil
 }
 
-func CheckTokenValue(token string) (interface{}, error) {
+func ExtractJWTToken(token string) (interface{}, error) {
 	key := os.Getenv("JWT_KEY")
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {

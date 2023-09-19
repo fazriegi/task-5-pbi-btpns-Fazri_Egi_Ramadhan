@@ -3,6 +3,7 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"strconv"
 	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/app"
 	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/controllers/queries"
 	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/helpers"
@@ -13,9 +14,10 @@ import (
 )
 
 type UserAuthController struct{}
+var user queries.UserQuery
 
 func (ua *UserAuthController) Register(c *gin.Context) {
-	var userInput app.RegisterValidation
+	var userInput app.UserValidation
 
 	if err := c.Bind(&userInput); err != nil {
 		log.Println("failed to binding data: ", err)
@@ -33,7 +35,7 @@ func (ua *UserAuthController) Register(c *gin.Context) {
 		return
 	}
 
-	emailRegistered, err := helpers.IsRegistered(userInput.Email)
+	emailRegistered, _, err := helpers.IsRegistered(userInput.Email)
 
 	if err != nil {
 		log.Println("failed to check email: ", err.Error())
@@ -63,7 +65,8 @@ func (ua *UserAuthController) Register(c *gin.Context) {
 		Password: hashedPassword,
 	}
 
-	if err = queries.Save(&userForDatabase); err != nil {
+	
+	if err = user.Save(&userForDatabase); err != nil {
 		log.Println("failed save user to database: ", err)
 		helpers.SendResponse(c, http.StatusInternalServerError, "failed register account", nil)
 
@@ -92,7 +95,7 @@ func (ua *UserAuthController) Login(c *gin.Context) {
 		return
 	}
 
-	emailRegistered, err := helpers.IsRegistered(userInput.Email)
+	emailRegistered, _, err := helpers.IsRegistered(userInput.Email)
 
 	if err != nil {
 		log.Println("failed to check email: ", err.Error())
@@ -107,7 +110,7 @@ func (ua *UserAuthController) Login(c *gin.Context) {
 		return
 	}
 
-	userData, err := queries.GetUser(userInput.Email)
+	userData, err := user.Get(userInput.Email)
 
 	if err != nil {
 		log.Println("failed get user hashed password: ", err.Error())
@@ -126,6 +129,7 @@ func (ua *UserAuthController) Login(c *gin.Context) {
 
 	data := map[string]string{
 		"token": jwtToken,
+		"user_id": strconv.Itoa(int(userData.ID)),
 	}
 
 	helpers.SendResponse(c, http.StatusOK, "login success", data)

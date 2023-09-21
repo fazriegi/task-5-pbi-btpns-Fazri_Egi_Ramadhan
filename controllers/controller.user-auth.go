@@ -73,7 +73,7 @@ func (ua *UserAuthController) Register(c *gin.Context) {
 		return
 	}
 
-	helpers.SendResponse(c, http.StatusOK, "success register account", nil)
+	helpers.SendResponse(c, http.StatusCreated, "success register account", nil)
 }
 
 func (ua *UserAuthController) Login(c *gin.Context) {

@@ -17,6 +17,9 @@ func Start() *gin.Engine {
 	r.PUT("/users/:userId", userController.Update)
 	r.DELETE("/users/:userId", userController.Delete)
 
+	photoController := controllers.PhotoController{}
+	r.POST("/photos", photoController.Add)
+
 	return r
 }
 

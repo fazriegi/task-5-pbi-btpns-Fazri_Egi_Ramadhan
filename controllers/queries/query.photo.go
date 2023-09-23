@@ -22,3 +22,7 @@ func (p *PhotoQuery) Delete(photoId uint) error {
 
 	return nil
 }
+
+func (p *PhotoQuery) Save(photo *models.Photo) error {
+	return database.DB.Save(photo).Error
+}

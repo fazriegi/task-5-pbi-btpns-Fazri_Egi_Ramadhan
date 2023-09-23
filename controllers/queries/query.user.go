@@ -39,14 +39,6 @@ func (u *UserQuery) Update(user *models.User) error {
 	return nil
 }
 
-func (u *UserQuery) SetEmailToNull(id uint) error {
-	if err := database.DB.Table("users").Where("id = ?", id).Update("email", "null").Error; err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (u *UserQuery) BeforeDelete(userId uint) error {
 	photoId, err := photo.Get(userId)
 
@@ -54,14 +46,9 @@ func (u *UserQuery) BeforeDelete(userId uint) error {
 		log.Println("failed to get user's photo: ", err)
 		return err
 	}
-
+	
 	if err := photo.Delete(photoId); err != nil {
 		log.Println("failed to delete user's photo: ", err)
-		return err
-	}
-
-	if err := user.SetEmailToNull(userId); err != nil {
-		log.Println("failed to delete user's email: ", err)
 		return err
 	}
 
@@ -73,7 +60,7 @@ func (u *UserQuery) Delete(userId uint) error {
 		return err
 	}
 
-	if err := database.DB.Delete(&models.User{}, userId).Error; err != nil {
+	if err := database.DB.Unscoped().Delete(&models.User{}, userId).Error; err != nil {
 		log.Println("failed to delete user", err)
 		return err
 	}

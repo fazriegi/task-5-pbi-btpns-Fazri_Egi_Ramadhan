@@ -127,6 +127,13 @@ func (ua *UserAuthController) Login(c *gin.Context) {
 
 	jwtToken, err := middlewares.CreateJWTToken(userData.ID)
 
+	if err != nil {
+		log.Println("failed to create jwt token", err)
+		helpers.SendResponse(c, http.StatusInternalServerError, err.Error(), nil)
+
+		return
+	}
+
 	data := map[string]string{
 		"token": jwtToken,
 		"user_id": strconv.Itoa(int(userData.ID)),

@@ -40,7 +40,7 @@ func (u *UserQuery) Update(user *models.User) error {
 }
 
 func (u *UserQuery) BeforeDelete(userId uint) error {
-	photoId, err := photo.Get(userId)
+	photoId, err := photo.GetPhotoId(userId)
 
 	if err != nil {
 		log.Println("failed to get user's photo: ", err)

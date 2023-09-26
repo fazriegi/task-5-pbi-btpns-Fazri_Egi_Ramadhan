@@ -22,6 +22,15 @@ func IsRegistered(email string) (bool, uint, error) {
 	return true, user.ID, nil
 }
 
+func CheckUserId(id uint) (bool, error) {
+	_, err := user.GetById(uint(id))
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
 func HashPassword(password string) (string, error) {
 	HashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {

@@ -67,3 +67,13 @@ func (u *UserQuery) Delete(userId uint) error {
 
 	return nil
 }
+
+func (u *UserQuery) GetById(id uint) (models.User, error) {
+	var user models.User
+
+	if err := database.DB.Where("id = ?", id).First(&user).Error; err != nil {
+		return user, err
+	}
+	
+	return user, nil
+}

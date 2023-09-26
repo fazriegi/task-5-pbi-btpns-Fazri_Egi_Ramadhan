@@ -4,11 +4,9 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/controllers/queries"
 	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/controllers/response"
 	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/helpers"
-	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/middlewares"
 	"task-5-pbi-btpns-Fazri_Egi_Ramadhan/models"
 
 	"github.com/gin-gonic/gin"
@@ -20,30 +18,10 @@ var photoQuery queries.PhotoQuery
 
 func (p *PhotoController) Add(c *gin.Context) {
 	authHeader := c.Request.Header["Authorization"]
+	userId, httpStatus, err := helpers.ValidateUserToken(authHeader)
 	
-	if authHeader ==  nil{
-		log.Println("authorization header is not specified")
-		helpers.SendResponse(c, http.StatusBadRequest, "authorization header is not specified", nil)
-
-		return
-	}
-
-	authorization := authHeader[0]
-	
-	if authorization == "" {
-		log.Println("authorization token is not specified")
-		helpers.SendResponse(c, http.StatusBadRequest, "authorization token is not specified", nil)
-
-		return
-	}
-
-	jwtToken := strings.Split(authorization, " ")[1]
-	userIdFromJwtToken, err := middlewares.ExtractJWTToken(jwtToken)
-	userId := int(userIdFromJwtToken.(float64))
-
 	if err != nil {
-		log.Println("failed to extract jwt token: ", err)
-		helpers.SendResponse(c, http.StatusBadRequest, err.Error(), nil)
+		helpers.SendResponse(c, int(httpStatus), err.Error(), nil)
 		return
 	}
 	
@@ -96,30 +74,10 @@ func (p *PhotoController) Add(c *gin.Context) {
 
 func (p *PhotoController) Get(c *gin.Context) {
 	authHeader := c.Request.Header["Authorization"]
+	userId, httpStatus, err := helpers.ValidateUserToken(authHeader)
 	
-	if authHeader ==  nil{
-		log.Println("authorization header is not specified")
-		helpers.SendResponse(c, http.StatusBadRequest, "authorization header is not specified", nil)
-
-		return
-	}
-
-	authorization := authHeader[0]
-	
-	if authorization == "" {
-		log.Println("authorization token is not specified")
-		helpers.SendResponse(c, http.StatusBadRequest, "authorization token is not specified", nil)
-
-		return
-	}
-
-	jwtToken := strings.Split(authorization, " ")[1]
-	userIdFromJwtToken, err := middlewares.ExtractJWTToken(jwtToken)
-	userId := int(userIdFromJwtToken.(float64))
-
 	if err != nil {
-		log.Println("failed to extract jwt token: ", err)
-		helpers.SendResponse(c, http.StatusBadRequest, err.Error(), nil)
+		helpers.SendResponse(c, int(httpStatus), err.Error(), nil)
 		return
 	}
 
@@ -150,31 +108,10 @@ func (p *PhotoController) Get(c *gin.Context) {
 
 func (p *PhotoController) Update(c *gin.Context) {
 	authHeader := c.Request.Header["Authorization"]
+	userId, httpStatus, err := helpers.ValidateUserToken(authHeader)
 	
-	if authHeader ==  nil{
-		log.Println("authorization header is not specified")
-		helpers.SendResponse(c, http.StatusBadRequest, "authorization header is not specified", nil)
-
-		return
-	}
-
-	authorization := authHeader[0]
-	
-	if authorization == "" {
-		log.Println("authorization token is not specified")
-		helpers.SendResponse(c, http.StatusBadRequest, "authorization token is not specified", nil)
-
-		return
-	}
-
-	jwtToken := strings.Split(authorization, " ")[1]
-	userIdFromJwtToken, err := middlewares.ExtractJWTToken(jwtToken)
-	userId := int(userIdFromJwtToken.(float64))
-
 	if err != nil {
-		log.Println("failed to extract jwt token: ", err)
-		helpers.SendResponse(c, http.StatusBadRequest, err.Error(), nil)
-
+		helpers.SendResponse(c, int(httpStatus), err.Error(), nil)
 		return
 	}
 
@@ -183,12 +120,12 @@ func (p *PhotoController) Update(c *gin.Context) {
 
 	if err != nil {
 		log.Println("failed to get user's photo id: ", err)
-		helpers.SendResponse(c, http.StatusBadRequest, err.Error(), nil)
+		helpers.SendResponse(c, http.StatusNotFound, err.Error(), nil)
 
 		return
 	}
 
-	if userId != int(photoFromDatabase.UserID) || photoId != int(photoFromDatabase.ID) {
+	if userId != photoFromDatabase.UserID || photoId != int(photoFromDatabase.ID) {
 		log.Println("unauthorized to update photo")
 		helpers.SendResponse(c, http.StatusUnauthorized, "can't update photo", nil)
 
@@ -251,31 +188,10 @@ func (p *PhotoController) Update(c *gin.Context) {
 
 func (p *PhotoController) Delete(c *gin.Context) {
 	authHeader := c.Request.Header["Authorization"]
+	userId, httpStatus, err := helpers.ValidateUserToken(authHeader)
 	
-	if authHeader ==  nil{
-		log.Println("authorization header is not specified")
-		helpers.SendResponse(c, http.StatusBadRequest, "authorization header is not specified", nil)
-
-		return
-	}
-
-	authorization := authHeader[0]
-	
-	if authorization == "" {
-		log.Println("authorization token is not specified")
-		helpers.SendResponse(c, http.StatusBadRequest, "authorization token is not specified", nil)
-
-		return
-	}
-
-	jwtToken := strings.Split(authorization, " ")[1]
-	userIdFromJwtToken, err := middlewares.ExtractJWTToken(jwtToken)
-	userId := int(userIdFromJwtToken.(float64))
-
 	if err != nil {
-		log.Println("failed to extract jwt token: ", err)
-		helpers.SendResponse(c, http.StatusBadRequest, err.Error(), nil)
-
+		helpers.SendResponse(c, int(httpStatus), err.Error(), nil)
 		return
 	}
 
@@ -284,12 +200,12 @@ func (p *PhotoController) Delete(c *gin.Context) {
 
 	if err != nil {
 		log.Println("failed to get user's photo id: ", err)
-		helpers.SendResponse(c, http.StatusBadRequest, err.Error(), nil)
+		helpers.SendResponse(c, http.StatusNotFound, err.Error(), nil)
 
 		return
 	}
 
-	if userId != int(photoFromDatabase.UserID) || photoId != int(photoFromDatabase.ID){
+	if userId != photoFromDatabase.UserID || photoId != int(photoFromDatabase.ID){
 		log.Println("unauthorized to delete photo")
 		helpers.SendResponse(c, http.StatusUnauthorized, "can't delete photo", nil)
 

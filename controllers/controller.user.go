@@ -79,7 +79,7 @@ func (uc *UserController) Delete(c *gin.Context) {
 
 	userIdFromParam, _ := strconv.Atoi(c.Param("userId"))
 
-	if userId == uint(userIdFromParam) {
+	if userId != uint(userIdFromParam) {
 		helpers.SendResponse(c, http.StatusUnauthorized, "can't delete user with given id", nil)
 		return
 	}

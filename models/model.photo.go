@@ -8,5 +8,5 @@ type Photo struct {
 	Caption  string `form:"caption"`
 	PhotoURL string `form:"photo_url"`
 	UserID   uint   `form:"user_id"`
-	User     User   `gorm:"foreignKey:UserID"`
+	User     User   `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }

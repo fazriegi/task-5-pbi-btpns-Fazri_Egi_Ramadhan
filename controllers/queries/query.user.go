@@ -9,8 +9,6 @@ import (
 )
 
 type UserQuery struct{}
-var photo PhotoQuery
-var user UserQuery
 
 func (u *UserQuery) Save(user *models.User) error {
 	return database.DB.Save(user).Error
@@ -39,27 +37,7 @@ func (u *UserQuery) Update(user *models.User) error {
 	return nil
 }
 
-func (u *UserQuery) BeforeDelete(userId uint) error {
-	photoId, err := photo.GetPhotoId(userId)
-
-	if err != nil {
-		log.Println("failed to get user's photo: ", err)
-		return err
-	}
-	
-	if err := photo.Delete(photoId); err != nil {
-		log.Println("failed to delete user's photo: ", err)
-		return err
-	}
-
-	return nil
-}
-
 func (u *UserQuery) Delete(userId uint) error {
-	if err := user.BeforeDelete(userId); err != nil {
-		return err
-	}
-
 	if err := database.DB.Unscoped().Delete(&models.User{}, userId).Error; err != nil {
 		log.Println("failed to delete user", err)
 		return err
